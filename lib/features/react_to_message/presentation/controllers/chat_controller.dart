@@ -1,5 +1,6 @@
 import 'package:flutter_features/features/react_to_message/domain/interfaces/message_interface.dart';
 import 'package:flutter_features/features/react_to_message/domain/models/message_model.dart';
+import 'package:flutter_features/utils/datetime_util.dart';
 import 'package:get/get.dart';
 
 class ChatController extends GetxController {
@@ -19,5 +20,29 @@ class ChatController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  bool isLastMsgBySameSender(int index) {
+    return index > 0 &&
+        messages[index - 1].senderId == messages[index].senderId;
+  }
+
+  bool isNextMsgBySameSender(int index) {
+    return index < messages.length - 1 &&
+        messages[index + 1].senderId == messages[index].senderId;
+  }
+
+  bool isMsgFromSameDay(int index) {
+    return index > 0 &&
+        DatetimeUtil.isDateSame(
+            messages[index - 1].sentAt, messages[index].sentAt);
+  }
+
+  String getMessageDateString(int index) {
+    return !isMsgFromSameDay(index)
+        ? DatetimeUtil.toDateStringDDMMMYYYY(
+            DateTime.parse(messages[index].sentAt),
+          ).toUpperCase()
+        : '';
   }
 }

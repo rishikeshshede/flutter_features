@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_features/features/react_to_message/domain/models/message_model.dart';
+import 'package:flutter_features/features/react_to_message/presentation/controllers/chat_controller.dart';
 import 'package:flutter_features/features/react_to_message/presentation/controllers/react_to_message_controller.dart';
 import 'package:flutter_features/themes/text_theme.dart';
 import 'package:flutter_features/utils/constants/app_constants.dart';
@@ -15,17 +16,15 @@ class MessageBubble extends StatelessWidget {
   final String ownUserId = AppConstants.dummyOwnUserId;
   final Message message;
   final int index;
-  final bool isLastMsgBySameSender;
-  final bool isNextMsgBySameSender;
   final String userImageUrl;
+  final ChatController chatController;
 
   MessageBubble({
     super.key,
     required this.message,
     required this.index,
-    required this.isLastMsgBySameSender,
-    required this.isNextMsgBySameSender,
     required this.userImageUrl,
+    required this.chatController,
   });
 
   @override
@@ -35,17 +34,12 @@ class MessageBubble extends StatelessWidget {
 
     return Container(
       alignment: isMyMessage ? Alignment.centerRight : Alignment.centerLeft,
-      margin: EdgeInsets.fromLTRB(
-        isMyMessage ? ResponsiveUtil.width(context, .3) : 8,
-        isLastMsgBySameSender ? 0 : 4,
-        isMyMessage ? 8 : ResponsiveUtil.width(context, .3),
-        2,
-      ),
+      margin: _getMargins(isMyMessage, context),
       child: isMyMessage
           ? _buildMessageBubble(context, isMyMessage, profilePicSize)
           : Row(
               children: [
-                if (!isNextMsgBySameSender)
+                if (!chatController.isNextMsgBySameSender(index))
                   _buildProfilePic(context, profilePicSize),
                 const HorizontalSpace(),
                 _buildMessageBubble(context, isMyMessage, profilePicSize),
@@ -71,7 +65,8 @@ class MessageBubble extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: 14.h(context), vertical: 7.w(context)),
-      margin: EdgeInsets.only(left: isNextMsgBySameSender ? size : 0),
+      margin: EdgeInsets.only(
+          left: chatController.isNextMsgBySameSender(index) ? size : 0),
       decoration: BoxDecoration(
         color: isMyMessage
             ? AppColors.ownMessageBubble
@@ -87,7 +82,19 @@ class MessageBubble extends StatelessWidget {
     );
   }
 
+  EdgeInsets _getMargins(bool isMyMessage, BuildContext context) {
+    return EdgeInsets.fromLTRB(
+      isMyMessage ? ResponsiveUtil.width(context, .3) : 8,
+      chatController.isLastMsgBySameSender(index) ? 0 : 4,
+      isMyMessage ? 8 : ResponsiveUtil.width(context, .3),
+      2,
+    );
+  }
+
   BorderRadius _getBorderRadius(bool isMyMessage) {
+    bool isLastMsgBySameSender = chatController.isLastMsgBySameSender(index);
+    bool isNextMsgBySameSender = chatController.isNextMsgBySameSender(index);
+
     return BorderRadius.only(
       topLeft: isMyMessage
           ? const Radius.circular(16)

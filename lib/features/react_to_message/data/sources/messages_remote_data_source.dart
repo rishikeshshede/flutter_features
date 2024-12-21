@@ -6,7 +6,7 @@ class MessageRemoteDataSource {
   MessageRemoteDataSource(this.baseUrl);
 
   Future<List<MessageDTO>> fetchMessages(String userId) async {
-    await Future.delayed(const Duration(seconds: 2), () {});
+    await Future.delayed(const Duration(seconds: 1), () {});
     const Map<String, dynamic> response = {
       'statusCode': 200,
       'body': dummyMessages,
@@ -64,7 +64,7 @@ const dummyMessages = [
   {
     "message_id": "5",
     "sender_id": "user789",
-    "content": "Awesome!",
+    "content": "Awesome!❤️",
     "sent_at": "2024-12-19T18:08:30Z",
     "type": "text",
     "is_read": true,

@@ -8,7 +8,6 @@ import 'package:flutter_features/features/react_to_message/presentation/widgets/
 import 'package:flutter_features/themes/text_theme.dart';
 import 'package:flutter_features/utils/constants/asset_constants.dart';
 import 'package:flutter_features/utils/constants/color_constants.dart';
-import 'package:flutter_features/utils/datetime_util.dart';
 import 'package:flutter_features/utils/responsive_util.dart';
 import 'package:get/get.dart';
 
@@ -48,70 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     Obx(
                       () => chatController.isLoading.value
                           ? const Center(child: CircularProgressIndicator())
-                          : Container(
-                              margin: EdgeInsets.only(
-                                  bottom: ResponsiveUtil.height(context, .05)),
-                              child: ListView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: chatController.messages.length,
-                                itemBuilder: (context, index) {
-                                  Message message =
-                                      chatController.messages[index];
-                                  bool isLastMsgBySameSender = index == 0
-                                      ? false
-                                      : chatController
-                                              .messages[index - 1].senderId ==
-                                          message.senderId;
-                                  bool isNextMsgBySameSender = index ==
-                                          chatController.messages.length - 1
-                                      ? false
-                                      : chatController
-                                              .messages[index + 1].senderId ==
-                                          message.senderId;
-                                  bool isMsgFromSameDay = index == 0
-                                      ? false
-                                      : DatetimeUtil.isDateSame(
-                                          chatController
-                                              .messages[index - 1].sentAt,
-                                          chatController
-                                              .messages[index].sentAt);
-
-                                  String dateStr = '';
-                                  if (!isMsgFromSameDay) {
-                                    DateTime dateTime = DateTime.parse(
-                                        chatController.messages[index].sentAt);
-                                    dateStr =
-                                        DatetimeUtil.toDateStringDDMMMYYYY(
-                                            dateTime);
-                                  }
-
-                                  return Column(
-                                    children: [
-                                      if (!isMsgFromSameDay)
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 16.0),
-                                          child: Text(
-                                            dateStr.toUpperCase(),
-                                            style: AppTextTheme.extraSmall(
-                                                context),
-                                          ),
-                                        ),
-                                      MessageBubble(
-                                        message: message,
-                                        index: index,
-                                        isLastMsgBySameSender:
-                                            isLastMsgBySameSender,
-                                        isNextMsgBySameSender:
-                                            isNextMsgBySameSender,
-                                        userImageUrl: AssetConstants.userMale1,
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
+                          : _buildMessageList(context),
                     ),
                   ],
                 ),
@@ -124,6 +60,45 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Container _buildMessageList(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: ResponsiveUtil.height(context, .05)),
+      child: ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: chatController.messages.length,
+        itemBuilder: (context, index) {
+          Message message = chatController.messages[index];
+
+          return Column(
+            children: [
+              if (!chatController.isMsgFromSameDay(index))
+                _showMessageDate(index, context),
+              MessageBubble(
+                message: message,
+                index: index,
+                chatController: chatController,
+                userImageUrl: AssetConstants.userMale1,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Padding _showMessageDate(int index, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Text(
+        chatController.getMessageDateString(index),
+        style: AppTextTheme.extraSmall(context).copyWith(
+          color: AppColors.textGrey,
         ),
       ),
     );
