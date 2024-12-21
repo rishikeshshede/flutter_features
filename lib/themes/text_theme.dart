@@ -63,7 +63,7 @@ class AppTextTheme {
 
   static TextStyle bodySecondary(BuildContext context, {Color? color}) {
     return TextStyle(
-      fontSize: _getResponsiveFontSize(context, 14.0.adaptSize(context)),
+      fontSize: _getResponsiveFontSize(context, 14.0.fSize(context)),
       fontWeight: FontWeight.w400,
       color: color ?? AppColors.textGrey,
     );
@@ -96,8 +96,8 @@ class AppTextTheme {
   static TextStyle genericTextStyle(BuildContext context,
       {Color? color, FontWeight? fontWeight, double? fontSize}) {
     return TextStyle(
-      fontSize:
-          _getResponsiveFontSize(context, fontSize ?? 12.0.fSize(context)),
+      fontSize: _getResponsiveFontSize(
+          context, fontSize?.fSize(context) ?? 12.0.fSize(context)),
       fontWeight: fontWeight ?? FontWeight.w400,
       color: color ?? AppColors.textDark,
     );
