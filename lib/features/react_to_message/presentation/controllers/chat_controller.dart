@@ -7,14 +7,14 @@ class ChatController extends GetxController {
   late final MessageInterface messageInterface;
 
   RxBool isLoading = false.obs;
-  List<Message> messages = <Message>[].obs;
+  RxList<Message> messages = <Message>[].obs;
 
   ChatController({required this.messageInterface});
 
   Future<void> fetchMessages(String userId) async {
     try {
       isLoading.value = true;
-      messages = await messageInterface.getMessages(userId);
+      messages.value = await messageInterface.getMessages(userId);
     } catch (e) {
       Get.snackbar("Error", e.toString());
     } finally {

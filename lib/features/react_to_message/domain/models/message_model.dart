@@ -24,4 +24,30 @@ class Message {
     this.deletedAt,
     this.reactions,
   );
+
+  Message copyWith({
+    String? messageId,
+    String? senderId,
+    String? content,
+    String? sentAt,
+    MessageType? type,
+    bool? isRead,
+    String? readAt,
+    String? updatedAt,
+    String? deletedAt,
+    List<MessageReaction>? reactions,
+  }) {
+    return Message(
+      messageId ?? this.messageId,
+      senderId ?? this.senderId,
+      content ?? this.content,
+      sentAt ?? this.sentAt,
+      type ?? this.type,
+      isRead ?? this.isRead,
+      readAt ?? this.readAt,
+      updatedAt ?? this.updatedAt,
+      deletedAt ?? this.deletedAt,
+      reactions ?? this.reactions,
+    );
+  }
 }

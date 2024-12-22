@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_features/features/react_to_message/domain/models/message_model.dart';
 import 'package:flutter_features/features/react_to_message/presentation/controllers/chat_controller.dart';
+import 'package:flutter_features/features/react_to_message/presentation/controllers/react_to_message_controller.dart';
 import 'package:flutter_features/features/react_to_message/presentation/widgets/app_bar_widget.dart';
 import 'package:flutter_features/features/react_to_message/presentation/widgets/encription_info_widget.dart';
 import 'package:flutter_features/features/react_to_message/presentation/widgets/message_bubble.dart';
 import 'package:flutter_features/features/react_to_message/presentation/widgets/message_input_widget.dart';
+import 'package:flutter_features/features/react_to_message/presentation/widgets/message_long_press_actions.dart';
 import 'package:flutter_features/themes/text_theme.dart';
 import 'package:flutter_features/utils/constants/asset_constants.dart';
 import 'package:flutter_features/utils/constants/color_constants.dart';
@@ -20,6 +22,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final chatController = Get.find<ChatController>();
+  final reactionController = Get.find<ReactToMessageController>();
 
   @override
   void initState() {
@@ -31,37 +34,44 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const AppBarWidget(),
-      body: GestureDetector(
-        onLongPressStart: (details) {},
-        child: Container(
-          color: AppColors.backgroundBlack,
-          height: ResponsiveUtil.height(context, 1),
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const EncriptionInfoWidget(),
-                    Obx(
-                      () => chatController.isLoading.value
-                          ? const Center(child: CircularProgressIndicator())
-                          : _buildMessageList(context),
-                    ),
-                  ],
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: const AppBarWidget(),
+          body: Container(
+            color: AppColors.backgroundBlack,
+            height: ResponsiveUtil.height(context, 1),
+            child: Stack(
+              children: [
+                // Show messages
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const EncriptionInfoWidget(),
+                      Obx(
+                        () => chatController.isLoading.value
+                            ? const Center(child: CircularProgressIndicator())
+                            : _buildMessageList(context),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const Positioned(
-                bottom: 0,
-                left: 7.2,
-                right: 7.2,
-                child: MessageInputWidget(),
-              ),
-            ],
+                // Message input box
+                const Positioned(
+                  bottom: 0,
+                  left: 7.2,
+                  right: 7.2,
+                  child: MessageInputWidget(),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+        // This will be shown then a message is long pressed
+        MessageLongPressActions(
+            chatController: chatController,
+            reactionController: reactionController),
+      ],
     );
   }
 
@@ -84,6 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 index: index,
                 chatController: chatController,
                 userImageUrl: AssetConstants.userMale1,
+                reactionController: reactionController,
               ),
             ],
           );

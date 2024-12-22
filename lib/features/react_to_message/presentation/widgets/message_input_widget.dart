@@ -54,7 +54,7 @@ class MessageInputWidget extends StatelessWidget {
               child: Container(
                 height: textboxHeight - 12,
                 alignment: Alignment.center,
-                padding: const EdgeInsets.fromLTRB(18, 7, 14, 7),
+                padding: const EdgeInsets.fromLTRB(14, 7, 14, 7),
                 margin: const EdgeInsets.only(right: 6),
                 decoration: BoxDecoration(
                   color: Colors.amber[900],
