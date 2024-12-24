@@ -67,7 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ),
-        // This will be shown then a message is long pressed
+        // Show then a message is long pressed
         MessageLongPressActions(
             chatController: chatController,
             reactionController: reactionController),

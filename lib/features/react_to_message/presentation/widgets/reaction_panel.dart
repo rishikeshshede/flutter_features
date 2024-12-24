@@ -45,7 +45,7 @@ class ReactionPanel extends StatelessWidget {
                             return Transform.translate(
                               offset: scale == 1
                                   ? Offset.zero
-                                  : const Offset(0, -20),
+                                  : const Offset(0, -70),
                               child: Transform.scale(
                                 scale: scale,
                                 child: Text(

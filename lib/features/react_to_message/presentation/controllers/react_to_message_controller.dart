@@ -67,9 +67,14 @@ class ReactToMessageController extends GetxController {
     return globalOffset.value.dy;
   }
 
+  bool isMyMessage() {
+    return chatController.messages[replyingToMsgIndex].senderId ==
+        AppConstants.dummyOwnUserId;
+  }
+
   void onEmojiTap(int index) async {
-    emojiScales[index] = 2;
-    await Future.delayed(const Duration(milliseconds: 200));
+    emojiScales[index] = 2.0;
+    await Future.delayed(const Duration(milliseconds: 300));
     emojiScales[index] = 1.0;
     addReactionToMessage(index);
     stopReaction();
@@ -105,17 +110,16 @@ class ReactToMessageController extends GetxController {
           ),
         );
       }
-      print("reactions: $reactions");
 
       Message updatedMessage =
           chatController.messages[index].copyWith(reactions: reactions);
 
       chatController.messages[index] = updatedMessage;
 
-      if (selectedEmojiIndex.value == index) {
+      if (selectedEmojiIndex.value == tappedEmojiIndex) {
         selectedEmojiIndex.value = -1;
       } else {
-        selectedEmojiIndex.value = index;
+        selectedEmojiIndex.value = tappedEmojiIndex;
       }
     }
   }

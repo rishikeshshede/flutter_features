@@ -25,6 +25,7 @@ class PopupMenuWidget extends StatelessWidget {
       'width': 16.0,
       'color': AppColors.backgroundLight,
       'action': () {},
+      'showToAll': true,
     },
     {
       'id': "forward",
@@ -33,6 +34,7 @@ class PopupMenuWidget extends StatelessWidget {
       'width': 16.0,
       'color': AppColors.backgroundLight,
       'action': () {},
+      'showToAll': true,
     },
     {
       'id': "copy",
@@ -41,6 +43,7 @@ class PopupMenuWidget extends StatelessWidget {
       'width': 16.0,
       'color': AppColors.backgroundLight,
       'action': () {},
+      'showToAll': true,
     },
     {
       'id': "delete",
@@ -49,6 +52,7 @@ class PopupMenuWidget extends StatelessWidget {
       'width': 16.0,
       'color': AppColors.backgroundLight,
       'action': () {},
+      'showToAll': false,
     },
     {
       'id': "unsend",
@@ -57,6 +61,7 @@ class PopupMenuWidget extends StatelessWidget {
       'width': 16.0,
       'color': AppColors.error,
       'action': () {},
+      'showToAll': false,
     },
   ];
 
@@ -78,14 +83,16 @@ class PopupMenuWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: menuItems.map((menu) {
-              return _buildMenuItem(
-                context,
-                menu['id'],
-                menu['text'],
-                menu['icon'],
-                menu['color'],
-                menu['width'],
-              );
+              return menu['showToAll'] || reactionController.isMyMessage()
+                  ? _buildMenuItem(
+                      context,
+                      menu['id'],
+                      menu['text'],
+                      menu['icon'],
+                      menu['color'],
+                      menu['width'],
+                    )
+                  : const SizedBox.shrink();
             }).toList(),
             // ],
           ),
